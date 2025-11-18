@@ -14,11 +14,47 @@ function deleteLast() {
 
 function calculate() {
     try {
-        resultInput.value = eval(resultInput.value);
+        resultInput.value = calculateExpression(resultInput.value);
     } catch (e) {
         alert('Invalid expression');
     }
 }
+
+function calculateExpression(expression) {
+    const operators = ['+', '-', '*', '/'];
+    let values = expression.split(/([+\-*/])/);
+    values = values.filter(v => v);
+
+    for (let i = 0; i < operators.length; i++) {
+        while (values.includes(operators[i])) {
+            let opIndex = values.indexOf(operators[i]);
+            let left = parseFloat(values[opIndex - 1]);
+            let right = parseFloat(values[opIndex + 1]);
+            let result;
+            switch (operators[i]) {
+                case '+':
+                    result = left + right;
+                    break;
+                case '-':
+                    result = left - right;
+                    break;
+                case '*':
+                    result = left * right;
+                    break;
+                case '/':
+                    if (right === 0) {
+                        alert("Division by zero is not allowed.");
+                        return '';
+                    }
+                    result = left / right;
+                    break;
+            }
+            values.splice(opIndex - 1, 3, result);
+        }
+    }
+    return values[0];
+}
+
 
 document.addEventListener('keydown', function(event) {
     const key = event.key;
